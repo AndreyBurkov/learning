@@ -142,7 +142,10 @@ String defaultText = Optional.ofNullable(text).orElse(getMyDefault());        //
 
 
 
-10. 
+10. Исключения с orElseThrow()
+Метод orElseThrow() вместо предоставления дефолтного метода выбрасывает исключение
+String nullName = null;
+String name = Optional.ofNullable(nullName).orElseThrow(IllegalArgumentException::new);
 
 
 
