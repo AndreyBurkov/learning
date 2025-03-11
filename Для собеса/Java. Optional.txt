@@ -1,0 +1,155 @@
+1. Проблема с null.
+Проблема с null в Java весьма известна. Когда мы пытаемся обратиться к объекту, 
+который может быть null, это может привести к NullPointerException. 
+Для избежания такой ситуации, программисты часто пишут проверки на null.
+
+if (obj != null) {
+    obj.doSomething();
+}
+
+Но эти проверки могут стать громоздкими и снижают читаемость кода.
+
+
+
+2. Как решает проблему Optional.
+Optional — это контейнер, который может содержать или не содержать значение. 
+Это помогает избежать NullPointerException, поскольку вместо null вы имеете 
+экземпляр Optional.
+Класс Optional предоставляет множество полезных методов. 
+Например, вы можете использовать orElse() для предоставления значения по 
+умолчанию, если Optional пуст.
+
+Optional<String> optional = getOptional();
+String value = optional.orElse("default");
+
+
+
+3. Когда использовать Optional.
+
+ - Как возвращаемый тип метода, который может вернуть null
+public Optional<Foo> findFoo(String id) {
+    // ...
+}
+ - В качестве необязательного параметра метода
+public Foo doSomething(String id, Optional<Bar> barOptional) {
+    // ...
+}
+ - В качестве необязательного члена класса
+public class Book {
+    private List<Pages> pages;
+    private Optional<Index> index;
+}
+
+Однако следует избегать использования Optional в коллекциях и массивах, 
+поскольку это может усложнить работу с коллекцией и снизить производительность.
+Optional — это мощный инструмент для работы с возможными null 
+значениями в Java. Он помогает сделать код более читаемым и надежным. Однако, 
+как и любой другой инструмент, его следует использовать с осторожностью и пониманием.
+
+4. Создание объекта Optional.
+Существует несколько способов. 
+ - Чтобы создать пустой объект можно использовать статический метод empty():
+{
+    Optional<String> empty = Optional.empty();
+    assertFalse(empty.isPresent());
+}
+Метод isPresent() проверяет наличие значения внутри объекта Optional.
+
+ - Также объект Optional можно создать с помощью статического метода of():
+{
+    String name = "Wine";
+    Optional<String> opt = Optional.of(name);
+    assertTrue(opt.isPresent());
+}
+В этом варианте объект, который мы передаем в метод of(), должен быть не null.
+ Иначе получим NullPointerException.
+
+ - Если мы предполагаем, что передаваемое значение может быть null, 
+   то используем другой метод - ofNullable():
+{
+    String name = "One more wine";
+    Optional<String> opt = Optional.ofNullable(name);
+    assertTrue(opt.isPresent());
+}
+Если мы передадим в этот метод null, то вместо NPE получим просто пустой объект Optional.
+
+
+
+5. Проверка наличия значений: isPresent() и isEmpty()
+Когда у нас имеется объект Optional, который мы получаем из метода или создаем сами, 
+с помощью метода isPresent() можно проверить есть ли что-то внутри:
+{
+    Optional<String> opt = Optional.of("Rioja wine region");
+    assertTrue(opt.isPresent());
+
+    opt = Optional.ofNullable(null);
+    assertFalse(opt.isPresent());
+}
+Метод возвращает true, если оборачиваемое значение не null. С Java 11 появился
+метод isEmpty(), который делает ровно противоположное:
+{
+    Optional<String> opt = Optional.of("Rioja 11");
+    assertFalse(opt.isEmpty());
+
+    opt = Optional.ofNullable(null);
+    assertTrue(opt.isEmpty());
+}
+
+
+
+6. Метод ifPresent()
+Метод ifPresent() позволяет нам выполнить код над объектом внутри Optional, если он не null.
+{
+    Optional<String> opt = Optional.ofNullable("Wine again");
+    opt.ifPresent(name -> System.out.println(name.length()));
+}
+
+
+
+7. Значение по умолчанию с orElse()
+Метод orElse() используется для получения значения, которое находится внутри Optional. 
+Он принимает один параметр - значение по умолчанию. Таким образом orElse() возвращает 
+или само значение из Optional или переданный аргумент
+{
+    String nullName = null;
+    String name = Optional.ofNullable(nullName).orElse("Boris");
+    assertEquals("Boris", name);
+}
+
+
+
+8. Значение по умолчанию с orElseGet()
+Метод orElseGet() очень похож на метод orElse(). Однако, вместо значения по умолчанию, 
+которое передается в качестве аргумента, метод принимает функциональный интерфейс Supplier, 
+который вызывает определенное действие.
+{
+    String nullName = null;
+    String name = Optional.ofNullable(nullName).orElseGet(new Supplier<String>() {
+        @Override
+        public String get() {
+            return "Boris";
+        }
+    });
+    assertEquals("Boris", name);
+}
+
+
+
+9. В чем отличие orElseGet() от orElse()?
+Важно понимать:
+String defaultText = Optional.ofNullable(text).orElseGet(this::getMyDefault); // getMyDefault() будет вызван только, если Optional пуст
+String defaultText = Optional.ofNullable(text).orElse(getMyDefault());        // getMyDefault() будет вызван 100%
+
+
+
+10. 
+
+
+
+
+
+
+
+
+
+

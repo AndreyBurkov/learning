@@ -1,0 +1,18 @@
+Stream API
+Optional
+ThreadLocal
+Collections
+I/O
+ООП/Functional
+SOLID, DRY, KISS
+CompletableFuture
+
+Spring. Жизненный цикл бинов
+Spring. Hibernate
+
+SQL. ACID
+SQL. Аномалии и уровни изоляции транзакций
+SQL. Индексы
+SQL. Having
+
+
