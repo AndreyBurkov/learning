@@ -1,19 +1,24 @@
 package ru.test;
 
 import java.net.URISyntaxException;
-import java.util.Optional;
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 public class MainTest {
 
     public static void main(String[] args) throws URISyntaxException, InterruptedException {
-        Optional<String> optional = Optional.ofNullable("new");
-        Optional<String> qwe = optional.or(() -> {
-            System.out.println("qwe");
-            return Optional.of("\"qwe\"");
-        });
+        Integer x = 10;
+        Function<Integer, String> function = integer -> {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            return String.valueOf(integer + x);
+        };
 
-        System.out.println(qwe.orElse("vvv"));
+        System.out.println(x);
+        System.out.println(function.apply(x));
+
     }
 
 }

@@ -1,0 +1,160 @@
+Apache Kafka — это популярная распределённая система, используемая для обработки потоковых данных в реальном времени.
+В Java существует несколько способов взаимодействия с Kafka. Вот основные из них:
+
+### 1. Kafka Producer API
+
+Позволяет разработчикам отправлять сообщения в Kafka. Основные шаги:
+- Создание экземпляра KafkaProducer.
+- Настройка конфигурации (например, bootstrap.servers, key.serializer, value.serializer).
+- Использование метода send() для отправки сообщений.
+
+**Пример:**
+```
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.RecordMetadata;
+
+import java.util.Properties;
+
+public class KafkaProducerExample {
+    public static void main(String[] args) {
+        Properties props = new Properties();
+        props.put("bootstrap.servers", "localhost:9092");
+        props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+
+        KafkaProducer<String, String> producer = new KafkaProducer<>(props);
+        
+        String topic = "my-topic";
+        ProducerRecord<String, String> record = new ProducerRecord<>(topic, "key", "value");
+        
+        producer.send(record, (RecordMetadata metadata, Exception exception) -> {
+            if (exception != null) {
+                exception.printStackTrace();
+            } else {
+                System.out.println("Message sent: " + metadata.toString());
+            }
+        });
+
+        producer.close();
+    }
+}
+```
+
+
+
+### 2. Kafka Consumer API
+
+Позволяет разработчикам читать сообщения из Kafka. Основные шаги:
+- Создание экземпляра KafkaConsumer.
+- Настройка конфигурации (например, bootstrap.servers, group.id, key.deserializer, value.deserializer).
+- Подписка на одну или несколько тем с помощью метода subscribe().
+- Использование метода poll() для получения сообщений.
+
+**Пример:**
+```
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+
+import java.time.Duration;
+import java.util.Collections;
+import java.util.Properties;
+
+public class KafkaConsumerExample {
+    public static void main(String[] args) {
+        Properties props = new Properties();
+        props.put("bootstrap.servers", "localhost:9092");
+        props.put("group.id", "my-group");
+        props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+        props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+
+        KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
+        consumer.subscribe(Collections.singletonList("my-topic"));
+
+        while (true) {
+            ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
+            for (ConsumerRecord<String, String> record : records) {
+                System.out.printf("Consumed message: key = %s, value = %s%n", record.key(), record.value());
+            }
+        }
+    }
+}
+```
+
+
+
+### 3. Kafka Streams API
+
+Предназначена для обработки и анализа потоков данных в режиме реального времени.
+Это библиотека, которая позволяет писать приложения для обработки данных, основанных на потоках,
+с использованием DSL и низкоуровневого API.
+
+**Пример:**
+```
+import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.streams.KafkaStreams;
+import org.apache.kafka.streams.StreamsBuilder;
+import org.apache.kafka.streams.StreamsConfig;
+import org.apache.kafka.streams.kstream.KStream;
+
+import java.util.Properties;
+
+public class KafkaStreamsExample {
+    public static void main(String[] args) {
+        Properties props = new Properties();
+        props.put(StreamsConfig.APPLICATION_ID_CONFIG, "stream-app");
+        props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+        props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
+        props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
+
+        StreamsBuilder builder = new StreamsBuilder();
+        KStream<String, String> stream = builder.stream("input-topic");
+        stream.to("output-topic");
+
+        KafkaStreams streams = new KafkaStreams(builder.build(), props);
+        streams.start();
+    }
+}
+```
+
+### 4. Kafka Connect
+
+Инструмент для интеграции Kafka с другими системами (с базами данных, системами хранения и т. д.) через коннекторы.
+Хотя сама библиотека не использует Java напрямую, вы можете написать кастомные коннекторы на Java.
+
+### 5. Spring Kafka
+
+Библиотека, которая интегрирует Spring Framework с Kafka.
+Упрощает разработку путем предоставления абстракций для потребителей и производителей.
+
+**Пример:**
+```
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class KafkaService {
+
+    @Autowired
+    private KafkaTemplate<String, String> kafkaTemplate;
+
+    public void sendMessage(String message) {
+        kafkaTemplate.send("my-topic", message);
+    }
+
+    @KafkaListener(topics = "my-topic", groupId = "my-group")
+    public void listen(String message) {
+        System.out.printf("Consumed message: %s%n", message);
+    }
+}
+```
+
+### Заключение
+
+Выбор способа взаимодействия с Kafka в Java зависит от требований вашего приложения.
+Если вы будете использовать нативный API, лучше изучить Producer и Consumer.
+Если ваше приложение сложное или вы уже используете Spring, рассмотрите использование
+Spring Kafka или Kafka Streams для обработки данных.
