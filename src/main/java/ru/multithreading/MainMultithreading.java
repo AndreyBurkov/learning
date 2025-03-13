@@ -1,57 +1,18 @@
 package ru.multithreading;
 
-import java.util.Stack;
-import java.util.logging.Logger;
+import java.util.concurrent.*;
 
 public class MainMultithreading {
 
-    private static final Logger logger = Logger.getGlobal();
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
+        ExecutorService executorService = Executors.newFixedThreadPool(3);
+        Future<String> future = executorService.submit(() -> {
+            Thread.sleep(3000);
+            return "asdf";
+        });
 
-    private static void main(String name, int age) {
-
-    }
-
-    public static void main(String[] args) {
-
-        String str1 = "HelloWorld";
-        String temp = "World";
-        String str2 = "Hello" + "World";
-        String str3 = "Hello" + temp;
-        String str4 = new String("HelloWorld");
-
-        System.out.println("str1 == str2: " + (str1 == str2));
-        System.out.println("str1 == str3: " + (str1 == str3));
-        System.out.println("str1 == str4:" + (str1 == str4));
-
-        Stack<Character> stack = new Stack<>();
-        stack.push('a');
-
-
-    }
-}
-
-
-class A {
-    private int a;
-    private int b;
-
-    public A(int a, int b) {
-        this.a = a;
-        this.b = b;
-    }
-}
-
-class B extends A {
-
-    private int c;
-
-    public B() {
-        super(0, 0);
-        c = 0;
-    }
-
-    public B(int a, int b, int c) {
-        super(a, b);
-        this.c = c;
+        String str = future.get();
+        System.out.println(str);
+        System.out.println("done");
     }
 }
