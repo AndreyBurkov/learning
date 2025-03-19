@@ -1,24 +1,21 @@
 package ru.test;
 
 import java.net.URISyntaxException;
-import java.util.function.Function;
 
 public class MainTest {
 
     public static void main(String[] args) throws URISyntaxException, InterruptedException {
-        Integer x = 10;
-        Function<Integer, String> function = integer -> {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            return String.valueOf(integer + x);
-        };
+        int i = 0;
 
-        System.out.println(x);
-        System.out.println(function.apply(x));
+        for (; i <= 10; calculate(i)) {
+            System.out.println(i);
+            i+=2;
+        }
 
+    }
+
+    private static int calculate(int x) {
+        return x++;
     }
 
 }
