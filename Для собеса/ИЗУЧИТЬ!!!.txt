@@ -4,7 +4,6 @@ ThreadLocal
 Collections
 I/O
 ООП/Functional
-SOLID, DRY, KISS
 CompletableFuture
 JWT
 Service Discovery
