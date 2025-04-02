@@ -1,0 +1,33 @@
+1. С помощью @Transactional.
+https://habr.com/ru/articles/682362/
+
+ - Атрибуты rollbackFor / noRollbackFor управляют только поведением транзакции в случае возникновения исключений.
+ Сами исключения по-прежнему пробрасываются выше по стеку;
+
+ - Атрибуты rollbackFor / noRollbackFor не наследуются @Transactional-методами ниже по стеку вызовов, даже если
+ используется Propagation.REQUIRED;
+
+ - Если вам всерьез приходится разбираться и активно пользоваться всем этим, то задумайтесь, а нужны ли в вашем
+ конкретном случае транзакции вообще и транзакции, управляемые контейнером, в частности. Переход на ручную работу с
+ транзакциями может упростить код, по сравнению с логикой, построенной на разных типах исключений.
+
+2. TransactionTemplate.
+        transactionTemplate.execute(status -> {
+            String transactionName = status.getTransactionName();
+            status.setRollbackOnly();
+            // .....
+            return transactionName;
+        });
+
+3. PlatformTransactionManager.
+        @Autowired
+        PlatformTransactionManager transactionManager
+
+        DefaultTransactionDefinition transactionDefinition = new DefaultTransactionDefinition();
+        transactionDefinition.setIsolationLevel(TransactionDefinition.ISOLATION_SERIALIZABLE);
+        transactionDefinition.setTimeout(5000);
+        TransactionStatus transactionStatus = transactionManager.getTransaction(transactionDefinition);
+        transactionStatus.setRollbackOnly();
+        transactionStatus.getTransactionName();
+        // .....
+        transactionManager.rollback(transactionStatus);
