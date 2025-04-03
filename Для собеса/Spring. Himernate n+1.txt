@@ -1,0 +1,83 @@
+Проблема N+1 возникает, когда мы генерируем запрос на получение одной сущности из базы данных, но у данной сущности есть
+свои связанные сущности, которые мы тоже хотим получить и hibernate генерирует вначале один (1) запрос к базе данных,
+чтобы получить интересующую нас сущность, а потом N запросов, чтобы достать из базы данных связанные сущности.
+Данная проблема отражается отрицательно на производительности работы базы данных из-за большого числа обращений к ней.
+
+  Решения проблемы:
+1. JPA Entity Graph.
+Вариант 1. Пишем аннотацию @EntityGraph методом репозитория.
+public interface ClientRepository extends JpaRepository<Client, Long> {
+    @EntityGraph(type = EntityGraph.EntityGraphType.FETCH, attributePaths = "emailAddresses")
+    List<Client> findByFullNameContaining(String name);
+}
+
+Вариант 2. Пишем аннотацию @NamedEntityGraph над классом Client.
+@Entity
+@Table(name = "client")
+@NamedEntityGraph(name = "client_entity-graph", attributeNodes = @NamedAttributeNode("emailAddresses"))
+public class Client {
+
+    // .................
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "client")
+    private List<EmailAddress> emailAddresses;
+
+}
+
+Также необходимо исправить аннотацию над ClientRepository.
+public interface ClientRepository extends JpaRepository<Client, Long> {
+    @EntityGraph(type = EntityGraph.EntityGraphType.FETCH, value = "client_entity-graph")
+    List<Client> findByFullNameContaining(String name);
+}
+
+
+------------------------------------------------------------------------------------------------------------------------
+Проблема N+1 в Hibernate возникает, когда для загрузки связанных сущностей выполняется слишком много запросов к базе данных. Это происходит, когда вы загружаете коллекцию сущностей, и для каждой из них Hibernate делает отдельный запрос для получения связанных данных.
+
+Вот несколько способов решения этой проблемы:
+
+1. **Использование `JOIN FETCH`:**
+   Используйте `JOIN FETCH` в JPQL или HQL для загрузки связанных сущностей за один запрос. Например:
+   ```java
+   SELECT p FROM Parent p JOIN FETCH p.children
+   ```
+
+2. **Использование `EntityGraph`:**
+   Вы можете использовать `EntityGraph`, чтобы указать, какие связанные сущности загружать. Это позволяет вам контролировать загрузку связанных данных.
+   ```java
+   EntityGraph graph = entityManager.createEntityGraph(Parent.class);
+   graph.addAttributeNodes("children");
+   Map<String, Object> properties = new HashMap<>();
+   properties.put("javax.persistence.loadgraph", graph);
+   Parent parent = entityManager.find(Parent.class, id, properties);
+   ```
+
+3. **Настройка `Batch Size`:**
+   Вы можете настроить `batch size` для коллекций, чтобы Hibernate загружал связанные сущности пакетами. Это можно сделать с помощью аннотации `@BatchSize`:
+   ```java
+   @OneToMany
+   @BatchSize(size = 10)
+   private Set<Child> children;
+   ```
+
+4. **Использование `Hibernate.initialize()`:**
+   Если вы знаете, что вам понадобятся связанные сущности, вы можете явно инициализировать их с помощью метода `Hibernate.initialize()`:
+   ```java
+   Hibernate.initialize(parent.getChildren());
+   ```
+
+5. **Использование `Criteria` API:**
+   Если вы используете Criteria API, вы можете использовать методы для загрузки связанных сущностей:
+   ```java
+   Criteria criteria = session.createCriteria(Parent.class);
+   criteria.setFetchMode("children", FetchMode.JOIN);
+   List<Parent> parents = criteria.list();
+   ```
+
+6. **Оптимизация запросов:**
+   Иногда полезно проанализировать ваши запросы и оптимизировать их, чтобы минимизировать количество запросов к базе данных.
+
+7. **Использование DTO:**
+   В некоторых случаях имеет смысл использовать Data Transfer Objects (DTO), чтобы избежать избыточной загрузки данных и оптимизировать количество запрашиваемых данных.
+
+Эти методы могут помочь вам справиться с проблемой N+1 в Hibernate, улучшая производительность вашего приложения и уменьшая количество запросов к базе данных.
