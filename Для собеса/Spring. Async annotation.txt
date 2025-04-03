@@ -1,0 +1,84 @@
+В Spring Boot аннотация `@Async` используется для обозначения методов, которые должны выполняться асинхронно, то есть в
+отдельном потоке. Это позволяет улучшить производительность приложения, особенно когда выполнение метода занимает
+значительное время, например, при выполнении долгих вычислений или запросов к внешним сервисам.
+
+### Как использовать `@Async` в Spring Boot
+
+1. **Добавьте зависимость**: Убедитесь, что у вас есть необходимая зависимость в вашем проекте. Если вы используете
+Maven, добавьте следующую зависимость в ваш `pom.xml`:
+
+   ```xml
+   <dependency>
+       <groupId>org.springframework.boot</groupId>
+       <artifactId>spring-boot-starter</artifactId>
+   </dependency>
+   ```
+
+2. **Включите поддержку асинхронных методов**: В классе конфигурации (например, в классе с аннотацией
+`@SpringBootApplication`) добавьте аннотацию `@EnableAsync`:
+
+   import org.springframework.boot.SpringApplication;
+   import org.springframework.boot.autoconfigure.SpringBootApplication;
+   import org.springframework.scheduling.annotation.EnableAsync;
+
+   @SpringBootApplication
+   @EnableAsync
+   public class MyApplication {
+       public static void main(String[] args) {
+           SpringApplication.run(MyApplication.class, args);
+       }
+   }
+
+3. **Создайте асинхронный метод**: Используйте аннотацию `@Async` для методов, которые должны выполняться асинхронно.
+Например:
+
+   import org.springframework.scheduling.annotation.Async;
+   import org.springframework.stereotype.Service;
+
+   @Service
+   public class MyAsyncService {
+
+       @Async
+       public void asyncMethod() {
+           // Долгая операция, например, задержка
+           try {
+               Thread.sleep(5000);
+           } catch (InterruptedException e) {
+               e.printStackTrace();
+           }
+           System.out.println("Асинхронный метод выполнен");
+       }
+   }
+
+4. **Вызов асинхронного метода**: Вы можете вызывать асинхронный метод из другого сервиса или контроллера:
+
+   import org.springframework.web.bind.annotation.GetMapping;
+   import org.springframework.web.bind.annotation.RestController;
+
+   @RestController
+   public class MyController {
+
+       private final MyAsyncService myAsyncService;
+
+       public MyController(MyAsyncService myAsyncService) {
+           this.myAsyncService = myAsyncService;
+       }
+
+       @GetMapping("/start-async")
+       public String startAsync() {
+           myAsyncService.asyncMethod();
+           return "Асинхронный процесс запущен";
+       }
+   }
+
+### Важные моменты:
+
+- **Возврат значений**: Если вы хотите, чтобы асинхронный метод возвращал значение, он должен возвращать `Future<T>`,
+  `CompletableFuture<T>` или `ListenableFuture<T>`.
+- **Обработка исключений**: Исключения, выбрасываемые из асинхронных методов, не будут переданы вызывающему коду.
+  Вы можете использовать обработку исключений внутри асинхронного метода или использовать механизм обработки исключений Spring.
+- **Пул потоков**: По умолчанию Spring использует пул потоков, но вы можете настроить его, определив `TaskExecutor` в
+  конфигурации вашего приложения.
+
+Использование `@Async` может значительно повысить отзывчивость вашего приложения, особенно в сценариях,
+где требуется параллельная обработка.

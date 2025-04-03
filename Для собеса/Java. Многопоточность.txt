@@ -210,7 +210,7 @@ CAS атомарно обновляет M до B, но только если з�
     - **Поддержка завершения**: Вы можете завершить `CompletableFuture` вручную с помощью метода `complete()`.
 
     Пример использования `CompletableFuture`:
-    
+
     import java.util.concurrent.CompletableFuture;
 
     public class CompletableFutureExample {
