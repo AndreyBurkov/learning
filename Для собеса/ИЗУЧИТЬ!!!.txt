@@ -9,6 +9,8 @@ JWT
 Service Discovery
 @Profile
 @Conditional
+Spring DAO
+@ExceptionHandler
 
 Spring. Жизненный цикл бинов
 Spring. Hibernate
