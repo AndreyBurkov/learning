@@ -24,7 +24,7 @@ Myinteface. Таким образом, любой тип, передаваемы
 Myinteface.
 
 4. Пример вызова обобщенного статического метода:
-public static <Т extends ComparaЬle<T>, V extends Т> boolean isin(T х, V[] у) { }
+public static <Т extends Comparable<T>, V extends Т> boolean isin(T х, V[] у) { }
 Integer nums [] = { 1, 2, 3, 4, 5 };
 GenMethDemo.<Integer, Integer>isin(2, nums)
 
@@ -38,12 +38,12 @@ class GenCons {
 }
 
 6. Обобщенный  интерфейс:
-interface MinMax<T extends ComparaЬle<T>> {}
+interface MinMax<T extends Comparable<T>> {}
 Имплементация, если класс тоже обобщенный:
-class MyClass<T extends ComparaЬle<T>> implements MinMax<T> { } - ВЕРНО
-class MyClass<T extends ComparaЬle<T>> implements MinMax<T extends ComparaЬle<T>> - НЕВЕРНО!!!
+class MyClass<T extends Comparable<T>> implements MinMax<T> { } - ВЕРНО
+class MyClass<T extends Comparable<T>> implements MinMax<T extends Comparable<T>> - НЕВЕРНО!!!
 class MyClass implements MinMax<T> { } - НЕВЕРНО!!!
-Имплементация заранеи известного типа:
+Имплементация зарание известного типа:
 class MyClass implements MinMax<Integer> { } - ВЕРНО
 
 7. Базовые типы не обеспечивают нужной безопасности. Это означает, что переменной
