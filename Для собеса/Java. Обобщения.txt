@@ -43,7 +43,7 @@ interface MinMax<T extends Comparable<T>> {}
 class MyClass<T extends Comparable<T>> implements MinMax<T> { } - ВЕРНО
 class MyClass<T extends Comparable<T>> implements MinMax<T extends Comparable<T>> - НЕВЕРНО!!!
 class MyClass implements MinMax<T> { } - НЕВЕРНО!!!
-Имплементация зарание известного типа:
+Имплементация заранее известного типа:
 class MyClass implements MinMax<Integer> { } - ВЕРНО
 
 7. Базовые типы не обеспечивают нужной безопасности. Это означает, что переменной
@@ -65,7 +65,7 @@ class Gen2<T> extends Gen<T> {
 9. Gen<Integer> iob1 = new Gen<>(1);
 iob1 instanceof Gen<?> == true
 iob1 instanceof Gen == true
-iob1 instanceof Gen<Stirng> == ERROR
+iob1 instanceof Gen<String> == ERROR
 
 10. Тип одного экземпляра обобщенного класса можно привести к другому только
 в том случае, если они совместимы и их аргументы типа одинаковы.
@@ -95,7 +95,7 @@ class Wrong<T> {
 Во-первых, нельзя создать экземпляр массива, тип элемента которого
 определяется параметром типа. И, во-вторых, нельзя создать массив специфических
 для типа обобщенных ссылок.
-class Gen<T extends NumЬer> {
+class Gen<T extends Number> {
   Т оЬ;
   Т vals[]; // Верно!
   Gen (T o, T[] nums) {
@@ -115,11 +115,11 @@ class GenArrays {
     Integer n[] = { 1, 2, 3, 4, 5 };
     Gen<Integer> iOb = new Gen<Integer>(50, n);
     // Нельзя создать массив специфических для типа обобщенных ссылок
-    // Gen<Integer> gens[] = new Gen<Integer>[lO]; // Неверно!
-    Gen<?> gens[] = new Gen<?>[lO]; // А это верно!
+    // Gen<Integer> gens[] = new Gen<Integer>[10]; // Неверно!
+    Gen<?> gens[] = new Gen<?>[10]; // А это верно!
   }
 }
 
 4. Ограничения на обобщенные исключения:
-Обобщенный класс не может расширять класс ThrowaЫe. Это означает, что
+Обобщенный класс не может расширять класс Throwable. Это означает, что
 создать обобщенные классы исключений нельзя.

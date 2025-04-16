@@ -1,24 +1,22 @@
 package ru.test;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.math.BigInteger;
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class MainTest {
 
+    public static void main(String args[]) throws InterruptedException {
+        String s1 = "hello";
+        String s2 = "world";
+        String s3 = s1 + s2;
+        String s4 = "helloworld";
+        String s5 = new String("helloworld");
+        String s6 = s1.concat(s2);
 
-    public static void main(String[] args) {
-
-        List<String> list = new ArrayList<>();
-        list.add("1");
-        list.add("2");
-        list.add("3");
-        list.add("4");
-        list.add("5");
-
-        list.add(2, "X");
-        Iterator<String> iterator = list.iterator();
-        System.out.println(list);
+        System.out.println(s3 == s4);
+        System.out.println(s3 == s5);
+        System.out.println(s4 == s6);
     }
 
 
