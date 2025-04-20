@@ -60,4 +60,7 @@ public class MainDeadLockExample implements Runnable {
 
     }
 
+    }
+
 }
+

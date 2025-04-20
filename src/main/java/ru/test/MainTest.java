@@ -1,22 +1,22 @@
 package ru.test;
 
 import java.math.BigInteger;
-import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Random;
+import java.util.function.Supplier;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class MainTest {
 
     public static void main(String args[]) throws InterruptedException {
-        String s1 = "hello";
-        String s2 = "world";
-        String s3 = s1 + s2;
-        String s4 = "helloworld";
-        String s5 = new String("helloworld");
-        String s6 = s1.concat(s2);
+        int[] nums = {1, 2, 3, 4, 5};
+        String[] strs = {"asdf","zxcv"};
+        Stream<String> stream = Arrays.stream(strs);
 
-        System.out.println(s3 == s4);
-        System.out.println(s3 == s5);
-        System.out.println(s4 == s6);
+        Stream.builder().add("asdf").add(new ArrayList<>()).build().forEach(System.out::println);
+
     }
 
 
