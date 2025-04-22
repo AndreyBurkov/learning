@@ -7,7 +7,8 @@
 управляют блокировками.
 
 ## Как Java обнаруживает deadlock?
-Java предоставляет встроенный механизм для обнаружения deadlock через класс `ThreadMXBean` из пакета `java.lang.management`.
+  Java предоставляет встроенный механизм для обнаружения deadlock через класс `ThreadMXBean` из пакета
+`java.lang.management`.
 
 ### Шаг 1: Использование `ManagementFactory` и `ThreadMXBean`
 Этот инструмент позволяет получить информацию о текущих потоках, включая наличие deadlock.
