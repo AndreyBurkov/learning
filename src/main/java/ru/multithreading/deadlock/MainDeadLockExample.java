@@ -23,7 +23,6 @@ public class MainDeadLockExample implements Runnable {
     }
 
 
-
     class A {
 
         public synchronized void runA(B b) {
@@ -60,7 +59,6 @@ public class MainDeadLockExample implements Runnable {
 
     }
 
-    }
-
 }
+
 
