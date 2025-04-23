@@ -57,7 +57,7 @@ public class MainDeadLockExample implements Runnable {
             System.out.println("getB is triggered");
         }
 
-
+    }
 
 }
 

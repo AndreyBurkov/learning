@@ -10,18 +10,15 @@ import java.util.stream.Stream;
 public class MainTest {
 
     public static void main(String args[]) throws InterruptedException {
-        PriorityQueue<String> queue = new PriorityQueue<>();
-        queue.add(null);
-        
+        Queue<String> values = new ArrayDeque<>();
 
 
-        Map<String ,BigInteger> map = new ConcurrentHashMap<>();
-        map.put(null, null);
-        map.put(null, BigInteger.TEN);
 
-        System.out.println(map);
+        System.out.println(values.size());
 
     }
+
+
 
 
 }
