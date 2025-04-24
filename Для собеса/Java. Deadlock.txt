@@ -136,4 +136,65 @@ public class DeadlockMonitor implements Runnable {
 - Используйте профилировщики для визуализации.
 - Предотвращайте deadlock'и через правильную организацию захвата ресурсов.
 
-Если потребуется, я могу помочь вам с конкретным примером или советами по устранению deadlock'ов в вашем коде.
+------------------------------------------------------------------------------------------------------------------------
+
+
+В Java для обнаружения и анализа deadlock-ов (взаимных блокировок) существует несколько способов и инструментов. Ниже приведены основные подходы:
+
+1. Использование Thread Dump:
+   - В случае возникновения deadlock-а JVM обычно выводит в лог или при использовании командной строки информацию о потоках, участвующих в взаимной блокировке.
+   - Можно получить дамп потоков с помощью команды:
+     ```
+     jstack <pid>
+     ```
+     или при нажатии сочетания клавиш (например, Ctrl+\) в консоли JVM.
+   - В выводе `jstack` ищите разделы, где указаны "Deadlock" или "Found one Java-level deadlock". Там будет видно, какие потоки и ресурсы участвуют.
+
+2. Анализ с помощью VisualVM:
+   - Инструмент VisualVM позволяет подключиться к JVM, делать снимки потоков и искать deadlock-ы через встроенные функции.
+   - В разделе Threads можно запустить "Detect Deadlocks" — он автоматически покажет наличие взаимных блокировок.
+
+3. Использование JVM-опций для обнаружения deadlock-ов:
+   - Можно запустить JVM с флагом:
+     ```
+     -XX:+PrintDeadlocks
+     ```
+     или
+     ```
+     -XX:+PrintDeadlocksStatistics
+     ```
+     — эти опции выведут информацию о deadlock-ах при завершении работы JVM или при необходимости.
+
+4. Внутри кода — программные способы:
+   - Использование `ThreadMXBean` из `java.lang.management`:
+     ```java
+     import java.lang.management.ManagementFactory;
+     import java.lang.management.ThreadInfo;
+     import java.lang.management.ThreadMXBean;
+
+     public class DeadlockDetector {
+         public static void detectDeadlocks() {
+             ThreadMXBean bean = ManagementFactory.getThreadMXBean();
+             long[] deadlockedThreads = bean.findDeadlockedThreads();
+             if (deadlockedThreads != null && deadlockedThreads.length > 0) {
+                 ThreadInfo[] infos = bean.getThreadInfo(deadlockedThreads);
+                 System.out.println("Deadlocked Threads:");
+                 for (ThreadInfo info : infos) {
+                     System.out.println(info.toString());
+                 }
+             } else {
+                 System.out.println("No deadlocks detected.");
+             }
+         }
+     }
+     ```
+   - Этот код позволяет программно обнаружить наличие deadlock-ов во время выполнения.
+
+5. Использование сторонних инструментов:
+   - Например, JProfiler, YourKit, JMC (Java Mission Control) — все они предоставляют функции для обнаружения deadlock-ов.
+
+**Резюме:**
+- Для быстрого обнаружения используйте `jstack`, `VisualVM`, или JVM-опции `-XX:+PrintDeadlocks`.
+- Для автоматического программного обнаружения — применяйте `ThreadMXBean` в коде.
+- Для постоянного мониторинга — используйте профилировщики и мониторинговые инструменты.
+

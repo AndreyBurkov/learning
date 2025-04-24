@@ -1,5 +1,4 @@
-Stream API
-Optional
+Stream API - flatmap, reduce
 ThreadLocal
 Collections
 I/O

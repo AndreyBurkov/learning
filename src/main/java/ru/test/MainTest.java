@@ -1,21 +1,21 @@
 package ru.test;
 
-import java.math.BigInteger;
-import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 public class MainTest {
 
-   private int xx;
+    private int xx;
 
     public static void main(String args[]) throws InterruptedException {
-Boolean b = null;
-
-        System.out.println(Boolean.FALSE.equals(b));
+        try {
+            if (1>0) throw new Exception("asdf");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }finally {
+            System.out.println("asfd");
+        }
     }
 
     class A {
-        private int x,y;
+        private int x, y;
 
         public A() {
             this.x = x;
@@ -23,7 +23,6 @@ Boolean b = null;
     }
 
     class B extends A {
-
 
 
     }
