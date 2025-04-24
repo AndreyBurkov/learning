@@ -1,31 +1,30 @@
 package ru.test;
 
-import java.util.ArrayDeque;
-import java.util.HashMap;
-import java.util.Queue;
+import java.math.BigInteger;
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class MainTest {
 
+   private int xx;
+
     public static void main(String args[]) throws InterruptedException {
-        new HashMap<>()
-        new B().get();
+Boolean b = null;
+
+        System.out.println(Boolean.FALSE.equals(b));
     }
 
-    private static class A {
+    class A {
+        private int x,y;
 
-        public void get() {
-            System.out.println("A");
+        public A() {
+            this.x = x;
         }
     }
 
-    private static class B extends A {
+    class B extends A {
 
 
-        private void get() {
-            super.get();
-            System.out.println("B");
-            super.get();
-        }
 
     }
 
